@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: imgproc-client
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: imageProcessing
+            tier: client
+    template:
+        metadata:
+            labels:
+                app: imageProcessing
+                tier: client
+        spec:
+            # hostNetwork: true
+            nodeSelector:
+              nodePool: master              
+            containers:
+            - name: imgproc-client
+              image: wangso/imgproc-client:latest
+              imagePullPolicy: Always
+              volumeMounts:
+                - name: data
+                  mountPath: /ImageProcessingWebServices/output/client
+            restartPolicy: Always
+            volumes: 
+              - name: data
+                hostPath:
+                  path: /output/client
+
+      

@@ -1,0 +1,5 @@
+opencv_python
+opencv_contrib_python
+numpy
+flask
+flask_restful

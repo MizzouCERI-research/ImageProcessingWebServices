@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-processing
+  labels: 
+    app: imageProcessing
+    tier: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: imageProcessing
+      tier: server
+  template:
+    metadata:
+      labels:
+        app: imageProcessing
+        tier: server
+    spec:
+      nodeSelector:
+        nodePool: master
+      containers:
+      - name: imgproc-server
+        image: wangso/imgproc-server:latest
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 5000
+        volumeMounts:
+          - name: output
+            mountPath: /ImageProcessingWebServices/output/server
+      restartPolicy: Always
+      volumes: 
+        - name: output
+          hostPath:
+            path: /output/server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-service
+spec:
+  type: NodePort
+  selector:
+    app: imageProcessing
+    tier: server
+  ports:
+  - port: 5000
+    targetPort: 5000
+    nodePort: 30067
+
+
+
+
+
+
+
+
+
+
+
+
