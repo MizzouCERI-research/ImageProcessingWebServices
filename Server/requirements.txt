@@ -1,5 +1,8 @@
-opencv_python
-opencv_contrib_python
-numpy
-flask
-flask_restful
+flask 
+flask_restful 
+scikit-build 
+libopencv-dev 
+python3-opencv 
+opencv_contrib_python 
+numpy 
+requests
