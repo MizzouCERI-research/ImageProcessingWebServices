@@ -14,20 +14,21 @@ spec:
                 app: imageProcessing
                 tier: client
         spec:
-            # hostNetwork: true
             nodeSelector:
-              nodePool: master              
+              nodePool: tamu-worker1
             containers:
             - name: imgproc-client
-              image: wangso/imgproc-client:latest
+              image: wangso/imgproc-client:V1
               imagePullPolicy: Always
+              env:
+                - name: server
+                  value: Server_IP:Port
               volumeMounts:
-                - name: data
-                  mountPath: /ImageProcessingWebServices/output/client
+              - mountPath: /ImageProcessingWebServices/output/client
+                name: output
+            volumes:
+            - name: output
+              hostPath:
+                path: /output/client
             restartPolicy: Always
-            volumes: 
-              - name: data
-                hostPath:
-                  path: /output/client
-
       

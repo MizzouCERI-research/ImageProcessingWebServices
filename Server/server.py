@@ -39,7 +39,7 @@ api = Api(app)
 @app.route("/")
 def index():
 	return "Image processing functional decomposition"
-
+	
 @app.route("/init", methods = ["POST"])
 def init():
 	"""
@@ -51,7 +51,7 @@ def init():
 	LABELS = open(labelsPath).read().strip().split("\n")
 	for label in LABELS:
 		labelDict[label] = 0
-	json.dump(labelDict, open(outputFile, "w"))
+	json.dump(labelDict, open(outputFile, "w"))	
 	return "Output Counter Initialized"
 
 @app.route("/frameProcessing", methods = ["POST"])
@@ -64,7 +64,7 @@ def frameProcessing():
 	#receive the image from the request.
 	file = request.json
 	frame = np.array(file["Frame"], dtype = "uint8")
-
+	
 	#gray-scale conversion and Gaussian blur filter applying
 	grayFrame = greyScaleConversion(frame)
 	blurredFrame = gaussianBlurring(grayFrame)
@@ -72,7 +72,7 @@ def frameProcessing():
 	#Check if a frame has been previously processed and set it as the previous frame.
 	if type(referenceFrame) ==int():
 		referenceFrame = blurredFrame
-
+	
 	#Background subtraction and image binarization
 	frameDelta = getImageDiff(referenceFrame, blurredFrame)
 	referenceFrame = blurredFrame
@@ -83,13 +83,13 @@ def frameProcessing():
 	dilatedFrame = dilateImage(frameThresh)
 	#cv2.imwrite("dilatedFrame.jpg", dilatedFrame)
 	cnts = getContours(dilatedFrame.copy())
-
+	
 	height = np.size(frame,0)
 	coordYEntranceLine = int((height / 2)-offsetEntranceLine)
 	coordYExitLine = int((height / 2)+offsetExitLine)
 	headers = {"enctype" : "multipart/form-data"}
 	r = requests.post("http://" + getNextServer() + "/objectClassifier", headers = headers, json = {"Frame":frame.tolist()} )
-	"""
+	"""	
 	for c in cnts:
 		print("x")
 		if cv2.contourArea(c) < minContourArea:
@@ -100,16 +100,16 @@ def frameProcessing():
 		cntImage  = frame[y:y+int(1.5*w), x:x+int(1.5*h)]
 		objectCentroid = getContourCentroid(x, y, w, h)
 		coordYCentroid = (y+y+h)/2
-
-
-		#if (checkEntranceLineCrossing(coordYCentroid,coordYEntranceLine,coordYExitLine)):
+		
+		
+		#if (checkEntranceLineCrossing(coordYCentroid,coordYEntranceLine,coordYExitLine)):				
 		headers = {"enctype" : "multipart/form-data"}
 		#i = random.randint(1,1000)
 		#cv2.imwrite("ContourImages/contour"+str(i)+".jpg", cntImage)
 		#files = {"image":open("ContourImages/contour"+str(i)+".jpg", "rb")}
 		data = {"contour" : cntImage.tolist()}
 		r = requests.post("http://" + getNextServer() + "/objectClassifier", headers = headers, json = data )
-
+	
 	"""
 	return Response(status=200)
 
@@ -122,29 +122,29 @@ def classifier():
 	#initialize important variables
 	minConfidence = 0.5
 	thresholdValue = 0.3
-
+	
 	"""
 	file = request.files#['image']
 	file.save("./classifier_image.jpg")
 	frame = cv2.imread("./classifier_image.jpg")
 	"""
 	file = request.json
-	frame = np.array(file["Frame"], dtype = "uint8")
+	frame = np.array(file["Frame"], dtype = "uint8") 
 
 	#file = request.files['image']
 	#file.save("./classifier_image.jpg")
 	#frame = cv2.imread("./classifier_image.jpg")
 	#file = request.json
 	#frame = np.array(file["contour"], dtype="uint8")
-
+	
 	#Get Image dimensions
 	image = cv2.copyMakeBorder(frame, 30, 30, 30, 30, cv2.BORDER_CONSTANT, value=255)
 	(H, W) = image.shape[:2]
-
+	
 	#Get the output layers parameters
 	ln = net.getLayerNames()
 	ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
-
+	
 	#Create a blob to do a forward pass
 	blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (416, 416), swapRB=True, crop=False)
 	net.setInput(blob)
@@ -200,7 +200,7 @@ def classifier():
 
 			print(LABELS[classIDs[i]], output[LABELS[classIDs[i]]]+1, confidences[i])
 			output[LABELS[classIDs[i]]]+=1
-
+		
 		json.dump(output, open(outputFile, "w"))
 		return LABELS[classIDs[i]]
 	else:
@@ -218,16 +218,17 @@ def getCounts():
 
 @app.route("/setNextServer", methods = ["POST"])
 def setNextServer():
-	data = request.get_json()
-	#json.dump(data["server"], open("../NextServer.txt", "w"))
-	text_file=open("../NextServer.txt", "w")
-	text_file.write(data["server"])
-	text_file.close()
-
+        data = request.get_json()
+        #json.dump(data["server"], open("../NextServer.txt", "w"))
+        text_file=open("../NextServer.txt", "w")
+        text_file.write(data["server"])
+        text_file.close()
+	
 def getNextServer():
 	file = open("../NextServer.txt", "r")
 	return file.read()[:]
 
+	
 def getContourCentroid(x, y, w, h):
     """
     Get the centroid/center of the countours you have
@@ -237,7 +238,7 @@ def getContourCentroid(x, y, w, h):
     coordYCentroid = (y+y+h)/2
     objectCentroid = (int(coordXCentroid),int(coordYCentroid))
     return objectCentroid
-
+	
 #Check if an object in entering in monitored zone
 def checkEntranceLineCrossing(y, coorYEntranceLine, coorYExitLine):
     absDistance = abs(y - coorYEntranceLine)
@@ -246,10 +247,10 @@ def checkEntranceLineCrossing(y, coorYEntranceLine, coorYExitLine):
         return 1
     else:
         return 0
-
+	
 def getContours(frame):
     """
-    Get the contours in the frame
+    Get the contours in the frame 
     @return: contours
     """
     contours, _ = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
