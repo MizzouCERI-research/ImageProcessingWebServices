@@ -1,30 +1,61 @@
 # ImageProcessingWebServices
 
 ## Object Detection
-[server.py](https://github.com/Blowoffvalve/ImageProcessingWebServices/blob/master/server.py) implements a RESTFUL webservice for object detection.
-The following endpoints currently exist.
 
+### Server 
+[server.py](https://github.com/wangso/ImageProcessingWebServices/Server/server.py) implements a RESTFUL webservice for object detection.
+The following endpoints currently exist.
 1. /frameProcessing: This uses openCv methods to find the objects that have changed from a preceding frame. It sends each object to /classifier.
-2. /objectClassifier: This is a deep learning model(Yolo-V3 trained on COCO) that attempts to classify an image into a fixed set of classes. It increments the [counter](https://github.com/Blowoffvalve/ImageProcessingWebServices/blob/master/output.txt) for that object class.
+2. /objectClassifier: This is a deep learning model(Yolo-V3 trained on COCO) that attempts to classify an image into a fixed set of classes. It increments the [counter](https://github.com/wangso/ImageProcessingWebServices/output/server/output.txt) for that object class.
 3. /init: This initializes all counters to 0
 4. /getCounts: This retrieves the current value of the counters.
 
-[client.py](https://github.com/Blowoffvalve/ImageProcessingWebServices/blob/master/client.py) reads a video and sends frames to server.py.
+[Dockerfile](https://github.com/wangso/ImageProcessingWebServices/Server/Dockerfile) for starting up a container running the server.
 
-[Dockerfile](https://github.com/Blowoffvalve/ImageProcessingWebServices/blob/master/Dockerfile) for starting up a container with the server already running.
+[server-deployment.yaml](https://github.com/wangso/ImageProcessingWebServices/server-deployment.yaml) for starting up a k8s pod running the server.
 
-### Setup
-1. Install your virtual environment to have the packages specified in [requirements.txt](https://github.com/Blowoffvalve/ImageProcessingWebServices/blob/master/requirements.txt).
-2. Clone the repository.
-2. Start the server by the flask app [server.py](https://github.com/Blowoffvalve/ImageProcessingWebServices/blob/master/server.py).
-3. Download the YOLO weights from [here](https://t.dripemail2.com/c/eyJhY2NvdW50X2lkIjoiNDc2ODQyOSIsImRlbGl2ZXJ5X2lkIjoiNjA5MjA5NTM2NCIsInVybCI6Imh0dHBzOi8vczMtdXMtd2VzdC0yLmFtYXpvbmF3cy5jb20vc3RhdGljLnB5aW1hZ2VzZWFyY2guY29tL29wZW5jdi15b2xvL3lvbG8tb2JqZWN0LWRldGVjdGlvbi56aXA_X19zPXFhZWJ1cHdpeGlzbjdmb2JqZnMzIn0) and save them to YOLO/
+### Client 
+[client.py](https://github.com/wangso/ImageProcessingWebServices/Client/client.py) reads a video and sends frames to server.py.
 
-### Test
-1. Run server.py : `python server.py`
-2. Edit NextServer.txt to contain the IP and port(Default is 5000) of the server that is running server.py. If you are running it on the same server, the default value `localhost:5000` should suffice
-3. Run client.py : `python client.py`
+[Dockerfile](https://github.com/wangso/ImageProcessingWebServices/Client/Dockerfile) for starting up a container running the client.
 
+[client-deployment.yaml](https://github.com/wangso/ImageProcessingWebServices/client-deployment.yaml) for starting up a k8s pod running the client.
 
-### Docker local test for connections (two terminals on the same machine):
-Terminal 1:  docker run --name server -v /root/server:/ImageProcessingWebServices/output/server -p 30067:5000 wangso/imgproc-server:latest
-Terminal 2:  docker run --name client -v /root/client:/ImageProcessingWebServices/output/client wangso/imgproc-client:latest
+### Testing with Docker containers only
+
+1. Run server container : 
+
+    $ docker pull wangso:imgproc-server:V1 
+    
+    $ docker run --name server -v /root/server:/ImageProcessingWebServices/output/server -p 5000:5000 wangso:imgproc-server:V1
+    
+2. Observe the logs from the server:
+    
+    $ docker logs -f server
+    
+3. On command line (replace Server_IP:Port):
+
+    $ curl -X POST -H 'Content-Type: application/json' https://Server_IP:Port/setNextServer -d '{"server":"Server_IP:Port"}'
+    
+3. Run client container : 
+    
+    $ docker pull wangso:imgproc-client:V1 
+    
+    $ docker run --name client -v /root/client:/ImageProcessingWebServices/output/client --env server=Server_IP:Port wangso:imgproc-client:V1
+    
+### Testing with Kubernetes cluster
+1. Run server deployment:
+
+    $ kubectl apply -f server-deployment.yaml
+    
+2. Monitor server output:
+
+    $ kubectl logs -f server_pod_ID
+
+3. Update server address to listen to (URL is depending on if the host machine has TLS, change to HTTP if no TLS on the host)
+
+    $ curl -X POST -H 'Content-Type: application/json' https://Server_IP:Port/setNextServer -d '{"server":"Server_IP:Port"}'
+    
+3. Run client deployment (first modify the env inside yaml file to update the server_IP:port): 
+
+     $ kubectl apply -f client-deployment.yaml
