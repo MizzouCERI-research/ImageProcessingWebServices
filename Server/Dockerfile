@@ -6,4 +6,4 @@ RUN git clone https://github.com/wangso/ImageProcessingWebServices.git
 WORKDIR /ImageProcessingWebServices/Server
 RUN cp /yolo-object-detection/yolo-coco/yolov3.weights ./YOLO/
 RUN rm -r /yolo-object-detection/ /yolo_weights.zip
-ENTRYPOINT ["python", "server.py"]
+ENTRYPOINT ["python3", "server.py"]
