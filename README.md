@@ -28,7 +28,7 @@ The following endpoints currently exist.
 
     $ docker pull wangso:imgproc-server:V1 
     
-    $ docker run --name server -v /root/server:/ImageProcessingWebServices/output/server -p 5000:5000 wangso:imgproc-server:V1
+    $ docker run --name server -v /root/server:/ImageProcessingWebServices/output/server -p 5000:5000 wangso/imgproc-server:V1
     
 2. Observe the logs from the server:
     
@@ -42,7 +42,7 @@ The following endpoints currently exist.
     
     $ docker pull wangso:imgproc-client:V1 
     
-    $ docker run --name client -v /root/client:/ImageProcessingWebServices/output/client --env server=Server_IP:Port wangso:imgproc-client:V1
+    $ docker run --name client -v /root/client:/ImageProcessingWebServices/output/client --env server=Server_IP:Port wangso/imgproc-client:V1
     
 ### Testing with Kubernetes cluster
 1. Run server deployment:
