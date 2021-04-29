@@ -1,0 +1,16 @@
+FROM wangso/python3-opencv-ffmpeg-cuda11:V1
+MAINTAINER Songjie Wang "wangso@missouri.edu"
+WORKDIR /root
+RUN git clone https://github.com/pjreddie/darknet.git && cd darknet \\
+  && sed "/s/GPU=0/GPU=1/g" Makefile && "/s/OPENCV=0/OPENCV=1/g" Makefile \\
+  && make && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+WORKDIR /root
+RUN git clone https://github.com/wangso/coconet.git && cd coconet
+RUN wget https://mizzouceri-s3.s3.amazonaws.com/yolo_weights.zip
+RUN unzip yolo_weights.zip
+RUN git clone https://github.com/wangso/ImageProcessingWebServices.git
+WORKDIR /ImageProcessingWebServices/Server
+RUN cp /root/darknet/cfg/coco.data ./YOLO/ && sed "s/names = data\/coco.names/names = \/ImageProcessingWebServices\/Server\/YOLO\/coco.names/g" coco.data > coco && mv coco coco.data
+RUN cp /yolo-object-detection/yolo-coco/yolov3.weights ./YOLO/
+RUN rm -r /yolo-object-detection/ /yolo_weights.zip
+ENTRYPOINT ["python3", "server.py"]
