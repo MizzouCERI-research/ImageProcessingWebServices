@@ -1,8 +1,9 @@
 # Server side: 
-
 docker run -p 5000:5000 Docker_image_ID
-
 docker logs -f container_ID
+
+# Server with gpu capability
+docker run --name server -v /root/server:/ImageProcessingWebServices/output/server --gpus all -p 5000:5000 wangso/imgproc-server:gpu
 
 # Command line to interact with Server 
 curl -X POST -H 'Content-Type: application/json' http://server_IP:port/setNextServer -d '{"server":"mylongerurllocalhost1"}'
