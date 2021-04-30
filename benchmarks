@@ -1,0 +1,104 @@
+# Without GPUs:
+
+		1 CPU 1Gb memory:
+			response = <Response [200]>, frame = 2, fps = 0.055
+			response = <Response [200]>, frame = 3, fps = 0.036
+			response = <Response [200]>, frame = 4, fps = 0.041
+			response = <Response [200]>, frame = 5, fps = 0.043
+
+		2 CPU 2Gb memory:
+			response = <Response [200]>, frame = 2, fps = 0.101 
+			response = <Response [200]>, frame = 3, fps = 0.111 
+			response = <Response [200]>, frame = 4, fps = 0.114 
+			response = <Response [200]>, frame = 5, fps = 0.115 
+			response = <Response [200]>, frame = 6, fps = 0.113 
+			response = <Response [200]>, frame = 7, fps = 0.112 
+			response = <Response [200]>, frame = 8, fps = 0.113 
+			response = <Response [200]>, frame = 9, fps = 0.112 
+			response = <Response [200]>, frame = 10, fps = 0.109 
+
+		4 CPU 4Gb:
+			response = <Response [200]>, frame = 2, fps = 0.253
+			response = <Response [200]>, frame = 3, fps = 0.264
+			response = <Response [200]>, frame = 4, fps = 0.294
+			response = <Response [200]>, frame = 5, fps = 0.263
+			response = <Response [200]>, frame = 6, fps = 0.147
+			response = <Response [200]>, frame = 7, fps = 0.152
+			response = <Response [200]>, frame = 8, fps = 0.172
+			response = <Response [200]>, frame = 9, fps = 0.244
+			response = <Response [200]>, frame = 10, fps = 0.169
+
+		8 CPU/8Gb memory
+			response = <Response [200]>, frame = 2, fps = 0.509
+			response = <Response [200]>, frame = 3, fps = 0.556
+			response = <Response [200]>, frame = 4, fps = 0.559
+			response = <Response [200]>, frame = 5, fps = 0.585
+			response = <Response [200]>, frame = 6, fps = 0.56
+			response = <Response [200]>, frame = 7, fps = 0.585
+			response = <Response [200]>, frame = 8, fps = 0.257
+			response = <Response [200]>, frame = 9, fps = 0.385
+			response = <Response [200]>, frame = 10, fps = 0.558
+
+		16 CPU/16Gb mem
+			response = <Response [200]>, frame = 2, fps = 0.689
+			response = <Response [200]>, frame = 3, fps = 0.903
+			response = <Response [200]>, frame = 4, fps = 0.903
+			response = <Response [200]>, frame = 5, fps = 0.902
+			response = <Response [200]>, frame = 6, fps = 0.916
+			response = <Response [200]>, frame = 7, fps = 0.908
+			response = <Response [200]>, frame = 8, fps = 0.919
+			response = <Response [200]>, frame = 9, fps = 0.451
+			response = <Response [200]>, frame = 10, fps = 0.841
+
+		32 CPU/32G mem
+			response = <Response [200]>, frame = 2, fps = 0.851
+			response = <Response [200]>, frame = 3, fps = 1.15
+			response = <Response [200]>, frame = 4, fps = 1.098
+			response = <Response [200]>, frame = 5, fps = 1.123
+			response = <Response [200]>, frame = 6, fps = 1.113
+			response = <Response [200]>, frame = 7, fps = 1.119
+			response = <Response [200]>, frame = 8, fps = 1.098
+			response = <Response [200]>, frame = 9, fps = 0.842
+			response = <Response [200]>, frame = 10, fps = 0.833
+
+		64 CPU/64G mem
+			response = <Response [200]>, frame = 2, fps = 0.877
+			response = <Response [200]>, frame = 3, fps = 1.188
+			response = <Response [200]>, frame = 4, fps = 1.135
+			response = <Response [200]>, frame = 5, fps = 1.211
+			response = <Response [200]>, frame = 6, fps = 1.146
+			response = <Response [200]>, frame = 7, fps = 1.173
+			response = <Response [200]>, frame = 8, fps = 1.142
+			response = <Response [200]>, frame = 9, fps = 1.041
+			response = <Response [200]>, frame = 10, fps = 0.799
+
+# With GPU: it does not matter how many CPU/Mem allocated, FPSs are similar:
+
+		2 CPU 2Gb memory:
+			response = <Response [200]>, frame = 2, fps = 1.125
+			response = <Response [200]>, frame = 3, fps = 1.803
+			response = <Response [200]>, frame = 4, fps = 1.661
+			response = <Response [200]>, frame = 5, fps = 1.805
+			response = <Response [200]>, frame = 6, fps = 1.703
+			response = <Response [200]>, frame = 7, fps = 1.788
+			response = <Response [200]>, frame = 8, fps = 1.727
+			response = <Response [200]>, frame = 9, fps = 1.833
+			response = <Response [200]>, frame = 10, fps = 1.666
+
+		64 CPU/64G mem
+			response = <Response [200]>, frame = 2, fps = 1.181
+			response = <Response [200]>, frame = 3, fps = 1.782
+			response = <Response [200]>, frame = 4, fps = 1.631
+			response = <Response [200]>, frame = 5, fps = 1.797
+			response = <Response [200]>, frame = 6, fps = 1.65
+			response = <Response [200]>, frame = 7, fps = 1.836
+			response = <Response [200]>, frame = 8, fps = 1.698
+			response = <Response [200]>, frame = 9, fps = 1.846
+			response = <Response [200]>, frame = 10, fps = 1.67
+
+
+
+
+
+
+
