@@ -197,9 +197,9 @@ def array_to_image(arr):
 
 def get_resolution():
     resolution = os.environ['resolution']
-    if resolution = "1080p" :
+    if resolution == "1080p" :
         return (1080, 1920, 3)
-    elif resolution = "360p" :
+    elif resolution == "360p" :
         return (360, 640, 3)
     else 
         print("video resolution is not defined...  ")
