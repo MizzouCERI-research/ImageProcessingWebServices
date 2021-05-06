@@ -1,0 +1,43 @@
+FROM nvidia/cuda:11.3.0-devel-ubuntu18.04
+MAINTAINER Songjie Wang "wangso@missouri.edu"
+WORKDIR /root
+
+# install essential libraries and updates
+RUN apt-get -y update && apt-get -y install software-properties-common apt-utils python3-pip python3-dev libopencv-dev python3-opencv build-essential ffmpeg unzip nano curl git wget iproute2 iperf net-tools
+
+RUN pip3 install cmake flask flask_restful scikit-build opencv_contrib_python numpy requests pillow
+
+# clone and configure darknet
+RUN git clone https://github.com/pjreddie/darknet.git \\
+  && cd darknet \\
+  && sed "/s/GPU=0/GPU=1/g" Makefile \\
+  && "/s/OPENCV=0/OPENCV=1/g" Makefile \\
+  && make clean \\
+  && make \\
+  && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+# (optional) install cudnn libraries
+WORKDIR /root
+RUN git clone https://github.com/wangso/coconet.git \\
+  && wget https://wangso-flynet.s3.amazonaws.com/libcudnn8_8.2.0.53-1%2Bcuda11.3_amd64.deb \\
+  && dpkg -i libcudnn8_8.2.0.53-1+cuda11.3_amd64.deb \\
+  && wget https://wangso-flynet.s3.amazonaws.com/libcudnn8-dev_8.2.0.53-1%2Bcuda11.3_amd64.deb \\
+  && dpkg -i libcudnn8-dev_8.2.0.53-1+cuda11.3_amd64.deb
+
+# download workflow pipeline
+RUN git clone https://github.com/wangso/ImageProcessingWebServices.git \\
+  && cd ImageProcessingWebServices \\
+  && cp /root/darknet/cfg/coco.data ./YOLO/ \\
+  && sed "s/names = data\/coco.names/names = \/ImageProcessingWebServices\/YOLO\/coco.names/g" coco.data > coco \\
+  && mv coco coco.data
+
+# (optional unless you need to use the full weights) 
+WORKDIR /ImageProcessingWebServices
+RUN wget https://wangso-flynet.s3.amazonaws.com/yolo_weights.zip \\
+  && unzip yolo_weights.zip \\
+  && cp /yolo-object-detection/yolo-coco/yolov3.weights ./YOLO/ \\
+  && rm -r /yolo-object-detection/ /yolo_weights.zip
+
+# run default entry command
+WORKDIR /ImageProcessingWebServices/Server
+ENTRYPOINT ["python3", "server.py"]

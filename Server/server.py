@@ -195,15 +195,15 @@ def array_to_image(arr):
     im = dn.IMAGE(w,h,c,data)
     return im
 
-# def get_resolution():
-#     resolution = os.environ['resolution']
-#     if resolution = "1080p" :
-#         return (1080, 1920, 3)
-#     elif resolution = "360p" :
-#         return (360, 640, 3)
-#     else 
-#         print("video resolution is not defined...  ")
-#         return 
+def get_resolution():
+    resolution = os.environ['resolution']
+    if resolution = "1080p" :
+        return (1080, 1920, 3)
+    elif resolution = "360p" :
+        return (360, 640, 3)
+    else 
+        print("video resolution is not defined...  ")
+        return 
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", debug=True)
