@@ -14,7 +14,7 @@ minFPS = 10000
 averageFPS =0
 FPS = []
 startTime = time.time()
-video = cv2.VideoCapture("./road-traffic.mp4")
+# video = cv2.VideoCapture("./road-traffic.mp4")
 
 # def getNextServer():
 #     #file = open("../NextServer.txt", "r")
