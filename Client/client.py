@@ -30,11 +30,11 @@ headers = {"enctype" : "multipart/form-data"}
 #uri = requests.post("http://" + getNextServer() + "/objectClassifier")
 
 #force webcam resolution to be 1080p or 360p
-if resolution = "1080p" :
+if resolution == "1080p" :
     video = cv2.VideoCapture("./360p_100KB.mp4")
     video.set(3,1080)
     video.set(4,1920)
-elif resolution = "360p" :
+elif resolution == "360p" :
     video = cv2.VideoCapture("./road-traffic.mp4")
     video.set(3,360)
     video.set(4,640)
