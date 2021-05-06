@@ -38,9 +38,8 @@ elif resolution == "360p" :
     video = cv2.VideoCapture("./road-traffic.mp4")
     video.set(3,360)
     video.set(4,640)
-else: 
-    print("video resolution is not defined...  ")
-    return 
+else : 
+    print("video resolution is not defined...  ") 
 
 response = requests.post(uri_init, json = {})
 
