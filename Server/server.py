@@ -201,7 +201,7 @@ def get_resolution():
         return (1080, 1920, 3)
     elif resolution == "360p" :
         return (360, 640, 3)
-    else 
+    else: 
         print("video resolution is not defined...  ")
         return 
 
