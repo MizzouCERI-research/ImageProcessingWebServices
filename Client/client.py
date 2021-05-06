@@ -38,7 +38,7 @@ elif resolution == "360p" :
     video = cv2.VideoCapture("./road-traffic.mp4")
     video.set(3,360)
     video.set(4,640)
-else 
+else: 
     print("video resolution is not defined...  ")
     return 
 
