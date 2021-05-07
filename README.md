@@ -10,16 +10,6 @@ $ docker pull wangso/imgproc-client:gpu
 
 Both Images can be run with the following settings (we included cap-add to allow modifying network settings). Example commands use resolution at 1080p. The other option currently available is '360p'. These two settings will allow streaming and processing of videos at these two resolutions ONLY!
 
-### Step 1: Start Server container
-$ docker run --rm -it --entrypoint bash --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --env resolution='1080p' --gpus all -p 5000:5000 wangso/imgproc-server:gpu
-
-### Step 2: Before running client, we need to update the server address on the Server container:
-$ curl -X POST -H 'Content-Type: application/json' http://**Server_IP**:5000/setNextServer -d '{"server":"server_IP:5000"}'
-
-### Step 3: Start Client container
-$ docker run --rm -it --entrypoint bash --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env resolution='1080p' --env server=**server_IP**:5000 wangso/imgproc-client:gpu
-
-
 ## Testing with Docker containers only
 
 ### Step 1. Run Server container on Server machine: 
