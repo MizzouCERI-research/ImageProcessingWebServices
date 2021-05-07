@@ -63,13 +63,13 @@ The following endpoints currently exist.
 
 [Dockerfile](https://github.com/wangso/ImageProcessingWebServices/Server/Dockerfile) for starting up a container running the server.
 
-[server-deployment.yaml](https://github.com/wangso/ImageProcessingWebServices/server-deployment.yaml) for starting up a k8s pod running the server.
+[server-deployment.yaml](https://github.com/wangso/ImageProcessingWebServices/blob/master/Kubenetes-manifest/server-deployment.yaml) for starting up a k8s pod running the server.
 
 ### Client 
 [client.py](https://github.com/wangso/ImageProcessingWebServices/Client/client.py) reads a video and sends frames to server.py.
 
 [Dockerfile](https://github.com/wangso/ImageProcessingWebServices/Client/Dockerfile) for starting up a container running the client.
 
-[client-deployment.yaml](https://github.com/wangso/ImageProcessingWebServices/client-deployment.yaml) for starting up a k8s pod running the client.
+[client-deployment.yaml](https://github.com/wangso/ImageProcessingWebServices/blob/master/Kubenetes-manifest/client-deployment.yaml) for starting up a k8s pod running the client.
 
 
