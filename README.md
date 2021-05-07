@@ -1,17 +1,17 @@
 # ImageProcessingWebServices
 
-## The current version includes GPU capabilities implemented on CUDA image, and will run on nVidia V100 GPU only. 
-## If different GPU is used, you need to modify the Darknet build inside the container, and recompile using the 
-## specific setting for that type of GPU. 
+### The current version includes GPU capabilities implemented on CUDA image, and will run on nVidia V100 GPU only. 
+### If different GPU is used, you need to modify the Darknet build inside the container, and recompile using the 
+### specific setting for that type of GPU. 
 
-# Currently available Docker images on Dockerhub:
+## Currently available Docker images on Dockerhub:
 
 $ docker pull wangso/imgproc-server:gpu
 $ docker pull wangso/imgproc-client:gpu
 
-## Both Images can be run with the following settings (we included cap-add to allow modifying network settings):
-## Example commands use resolution at 1080p. The other option currently available is '360p'. These two settings 
-## will allow streaming and processing of videos at these two resolutions ONLY!
+### Both Images can be run with the following settings (we included cap-add to allow modifying network settings):
+### Example commands use resolution at 1080p. The other option currently available is '360p'. These two settings 
+### will allow streaming and processing of videos at these two resolutions ONLY!
 
 ### Step 1: Start Server container
 $ docker run --rm -it --entrypoint bash --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --env resolution='1080p' --gpus all -p 5000:5000 wangso/imgproc-server:gpu
