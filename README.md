@@ -2,7 +2,7 @@
 
 The current version includes GPU capabilities implemented on CUDA image, and will run on nVidia V100 GPU only. If different GPU is used, you need to modify the Darknet build inside the container, and recompile using the specific setting for that type of GPU. 
 
-## Currently available Docker images on Dockerhub:
+## Currently available Docker images on Dockerhub (these images still use HTTP POST request to send video streams):
 
 $ docker pull wangso/imgproc-server:gpu
 
