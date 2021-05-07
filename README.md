@@ -1,5 +1,71 @@
 # ImageProcessingWebServices
 
+## The current version includes GPU capabilities implemented on CUDA image, and will run on nVidia V100 GPU only. 
+## If different GPU is used, you need to modify the Darknet build inside the container, and recompile using the 
+## specific setting for that type of GPU. 
+
+# Currently available Docker images on Dockerhub:
+
+$ docker pull wangso/imgproc-server:gpu
+$ docker pull wangso/imgproc-client:gpu
+
+## Both Images can be run with the following settings (we included cap-add to allow modifying network settings):
+## Example commands use resolution at 1080p. The other option currently available is '360p'. These two settings 
+## will allow streaming and processing of videos at these two resolutions ONLY!
+
+### Step 1: Start Server container
+$ docker run --rm -it --entrypoint bash --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --env resolution='1080p' --gpus all -p 5000:5000 wangso/imgproc-server:gpu
+
+### Step 2: Before running client, we need to update the server address on the Server container:
+$ curl -X POST -H 'Content-Type: application/json' http://**Server_IP**:5000/setNextServer -d '{"server":"server_IP:5000"}'
+
+### Step 3: Start Client container
+$ docker run --rm -it --entrypoint bash --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env resolution='1080p' --env server=**server_IP**:5000 wangso/imgproc-client:gpu
+
+
+## Testing with Docker containers only
+
+### Step 1. Run Server container on Server machine: 
+
+    $ docker pull wangso:imgproc-server:gpu 
+    
+    $ docker run --rm -it --entrypoint bash --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --env resolution='1080p' --gpus all -p 5000:5000 wangso/imgproc-server:gpu
+    
+### Step 2: Before running client, we need to update the server address on the Server container (this command can be run from anywhere where you have curl installed):
+    
+    $ curl -X POST -H 'Content-Type: application/json' http://**Server_IP**:5000/setNextServer -d '{"server":"server_IP:5000"}'
+    
+### Step 3: Start Client container on Client machine:
+    
+    $ docker pull wangso:imgproc-client:gpu 
+    
+    $ docker run --rm -it --entrypoint bash --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env resolution='1080p' --env server=**server_IP**:5000 wangso/imgproc-client:gpu
+
+    
+## Testing with Kubernetes cluster
+
+### Step 1. Run server deployment:
+
+    $ kubectl apply -f server-deployment.yaml
+    
+### Step 2. Monitor server output:
+
+    $ kubectl logs -f server_pod_ID
+
+### Step 3. Update server address to listen to (URL is depending on if the host machine has TLS, change to HTTP if no TLS on the host)
+
+    $ curl -X POST -H 'Content-Type: application/json' https://Server_IP:Port/setNextServer -d '{"server":"Server_IP:Port"}'
+    
+### Step 3. Run client deployment (first modify the env inside yaml file to update the server_IP:port): 
+
+     $ kubectl apply -f client-deployment.yaml
+     
+     
+     
+------------------------------------------------------------------------
+# Description of the Image processing app components: 
+
+
 ## Object Detection
 
 ### Server 
@@ -22,41 +88,4 @@ The following endpoints currently exist.
 
 [client-deployment.yaml](https://github.com/wangso/ImageProcessingWebServices/client-deployment.yaml) for starting up a k8s pod running the client.
 
-### Testing with Docker containers only
 
-1. Run server container : 
-
-    $ docker pull wangso:imgproc-server:V1 
-    
-    $ docker run --name server -v /root/server:/ImageProcessingWebServices/output/server -p 5000:5000 wangso/imgproc-server:V1
-    
-2. Observe the logs from the server:
-    
-    $ docker logs -f server
-    
-3. On command line (replace Server_IP:Port):
-
-    $ curl -X POST -H 'Content-Type: application/json' https://Server_IP:Port/setNextServer -d '{"server":"Server_IP:Port"}'
-    
-3. Run client container : 
-    
-    $ docker pull wangso:imgproc-client:V1 
-    
-    $ docker run --name client -v /root/client:/ImageProcessingWebServices/output/client --env server=Server_IP:Port wangso/imgproc-client:V1
-    
-### Testing with Kubernetes cluster
-1. Run server deployment:
-
-    $ kubectl apply -f server-deployment.yaml
-    
-2. Monitor server output:
-
-    $ kubectl logs -f server_pod_ID
-
-3. Update server address to listen to (URL is depending on if the host machine has TLS, change to HTTP if no TLS on the host)
-
-    $ curl -X POST -H 'Content-Type: application/json' https://Server_IP:Port/setNextServer -d '{"server":"Server_IP:Port"}'
-    
-3. Run client deployment (first modify the env inside yaml file to update the server_IP:port): 
-
-     $ kubectl apply -f client-deployment.yaml
