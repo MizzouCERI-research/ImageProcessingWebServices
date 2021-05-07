@@ -44,67 +44,67 @@ api = Api(app)
 
 @app.route("/")
 def index():
-	return "Image processing functional decomposition"
+    return "Image processing functional decomposition"
 
 @app.route("/init", methods = ["POST"])
 def init():
-	"""
-	Re-initialize the object counter to 0 for all objects.
-	"""
-	print("Initializing Application")
-	labelDict = {}
-	labelsPath = os.path.sep.join([yolodir, "coco.names"])
-	LABELS = open(labelsPath).read().strip().split("\n")
-	for label in LABELS:
-		labelDict[label] = 0
-	json.dump(labelDict, open(outputFile, "w"))
-	return "Output Counter Initialized"
+    """
+    Re-initialize the object counter to 0 for all objects.
+    """
+    print("Initializing Application")
+    labelDict = {}
+    labelsPath = os.path.sep.join([yolodir, "coco.names"])
+    LABELS = open(labelsPath).read().strip().split("\n")
+    for label in LABELS:
+        labelDict[label] = 0
+    json.dump(labelDict, open(outputFile, "w"))
+    return "Output Counter Initialized"
 
 @app.route("/frameProcessing", methods = ["POST"])
 def frameProcessing():
-	"""
-	Receive the frames from a video sequentially and count the number of objects. Each object is sent to a classifier which saves the count of objects that have been seen.
-	"""
-	global referenceFrame
-	global dilatedFrame
-	#receive the image from the request.
-	file = request.json
-	frame = np.array(file["Frame"], dtype = "uint8")
-	headers = {"enctype" : "multipart/form-data"}
-	r = requests.post("http://" + getNextServer() + "/objectClassifier", headers = headers, json = {"Frame":frame.tolist()} )
-	return Response(status=200)
+    """
+    Receive the frames from a video sequentially and count the number of objects. Each object is sent to a classifier which saves the count of objects that have been seen.
+    """
+    global referenceFrame
+    global dilatedFrame
+    #receive the image from the request.
+    file = request.json
+    frame = np.array(file["Frame"], dtype = "uint8")
+    headers = {"enctype" : "multipart/form-data"}
+    r = requests.post("http://" + getNextServer() + "/objectClassifier", headers = headers, json = {"Frame":frame.tolist()} )
+    return Response(status=200)
 
 @app.route("/objectClassifier", methods = ["POST"])
 def classifier():
-	"""
-	Classify an object and update the counter maintained at output.txt.
-	"""
-	print("Classifying")
-	#initialize important variables
-	minConfidence = 0.5
-	thresholdValue = 0.3
-	file = request.json
-	frame = np.array(file["Frame"], dtype = "uint8")
-	# width, height = frame.size
-	frame = np.reshape(frame, get_resolution())
-	# print(frame.shape)
-	# print(frame)
-	# data = Image.fromarray(frame)
-	# print("dimension of frame ", frame.shape[0], frame.shape[1], frame.shape[2])
-	im = array_to_image(frame)
-	dn.rgbgr_image(im)
-	r = dn.detect(net, meta, im)
-	print(r)
-	return Response(status=200)
+    """
+    Classify an object and update the counter maintained at output.txt.
+    """
+    print("Classifying")
+    #initialize important variables
+    minConfidence = 0.5
+    thresholdValue = 0.3
+    file = request.json
+    frame = np.array(file["Frame"], dtype = "uint8")
+    # width, height = frame.size
+    frame = np.reshape(frame, get_resolution())
+    # print(frame.shape)
+    # print(frame)
+    # data = Image.fromarray(frame)
+    # print("dimension of frame ", frame.shape[0], frame.shape[1], frame.shape[2])
+    im = array_to_image(frame)
+    dn.rgbgr_image(im)
+    r = dn.detect(net, meta, im)
+    print(r)
+    return Response(status=200)
 
 @app.route("/getCounts", methods = ["GET"])
 def getCounts():
-	retval ={}
-	output = json.load(open(outputFile))
-	for key, val in output.items():
-		if val >=1:
-			retval[key] = val
-	return jsonify(retval)
+    retval ={}
+    output = json.load(open(outputFile))
+    for key, val in output.items():
+        if val >=1:
+            retval[key] = val
+    return jsonify(retval)
 
 @app.route("/setNextServer", methods = ["POST"])
 def setNextServer():
@@ -115,8 +115,8 @@ def setNextServer():
         text_file.close()
 
 def getNextServer():
-	file = open("../NextServer.txt", "r")
-	return file.read()[:]
+    file = open("../NextServer.txt", "r")
+    return file.read()[:]
 
 
 def getContourCentroid(x, y, w, h):
@@ -206,4 +206,4 @@ def get_resolution():
         return 
 
 if __name__ == "__main__":
-	app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True)
