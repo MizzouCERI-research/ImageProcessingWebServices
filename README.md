@@ -8,6 +8,8 @@ $ docker pull wangso/imgproc-server:gpu
 
 $ docker pull wangso/imgproc-client:gpu
 
+Both images were built in two stages: 1). building base image using Dockerfile in the [Base-Docker-image](https://github.com/wangso/ImageProcessingWebServices/blob/master/Base-Docker-image/) folder. 2). Build final working images (above) using the base images and adding entrypoint commands. 
+
 Both Images can be run with the following settings (we included cap-add to allow modifying network settings). Example commands use resolution at 1080p. The other option currently available is '360p'. These two settings will allow streaming and processing of videos at these two resolutions ONLY!
 
 ## Testing with Docker containers only
