@@ -23,16 +23,13 @@ curl -X POST http://127.0.0.1:5000/sendFrame
 # curl -X POST -H 'Content-Type: application/json' https://127.0.0.1:5000/setNextServer -d '{"server":"127.0.0.1:5000"}'
 # client side:
 
-# to overwrite entrypoint command
-docker run -it --env server=server_IP:port --entrypoint bash Docker_image_ID
+# run server and client with gpu with standard output on 1080p
+docker run --rm -it --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --env resolution='1080p' --gpus all -p 5000:5000 wangso/imgproc-server:gpu
+docker run --rm -it --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env resolution='1080p' --env server=129.114.109.185:5000 wangso/imgproc-client:gpu
 
-# run server and client with gpu 
-docker run --rm --name server -v /root/server:/ImageProcessingWebServices/output/server --gpus all -p 5000:5000 wangso/imgproc-server:gpu
-docker run --rm --name client -v /root/client:/ImageProcessingWebServices/output/client --env server=129.114.109.185:5000 wangso/imgproc-client:gpu
-
-# run interactive containers
-docker run --rm -it --entrypoint bash --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --gpus all -p 5000:5000 wangso/imgproc-server:1080gpu
-docker run --rm -it --entrypoint bash --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env server=129.114.109.185:5000 wangso/imgproc-client:gpu1080p
+# run interactive containers and skip default entrypoint on 1080p
+docker run --rm -it --entrypoint bash --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --env resolution='1080p' --gpus all -p 5000:5000 wangso/imgproc-server:gpu
+docker run --rm -it --entrypoint bash --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env resolution='1080p' --env server=129.114.109.185:5000 wangso/imgproc-client:gpu
 
 # to use pre-defined entrypoint command
 docker run -it --env server=server_IP:port Docker_image_ID
@@ -71,8 +68,6 @@ tc qdisc add dev eth0 root tbf rate 50mbit latency 5ms burst 80000
 tc qdisc delete dev eth0 root
 
 
-# Yolo tiny data:
-wget -O ./yolov3-tiny.weights https://pjreddie.com/media/files/yolov3-tiny.weights
 
 
 

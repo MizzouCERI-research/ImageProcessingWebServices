@@ -1,6 +1,6 @@
 FROM nvidia/cuda:11.3.0-devel-ubuntu18.04
 MAINTAINER Songjie Wang "wangso@missouri.edu"
-WORKDIR /root
+WORKDIR /
 
 # install essential libraries and updates
 RUN apt-get -y update && apt-get -y install software-properties-common apt-utils python3-pip python3-dev libopencv-dev python3-opencv build-essential ffmpeg unzip nano curl git wget iproute2 iperf net-tools
@@ -17,7 +17,7 @@ RUN git clone https://github.com/pjreddie/darknet.git \\
   && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 # (optional) install cudnn libraries
-WORKDIR /root
+WORKDIR /
 RUN git clone https://github.com/wangso/coconet.git \\
   && wget https://wangso-flynet.s3.amazonaws.com/libcudnn8_8.2.0.53-1%2Bcuda11.3_amd64.deb \\
   && dpkg -i libcudnn8_8.2.0.53-1+cuda11.3_amd64.deb \\
