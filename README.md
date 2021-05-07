@@ -12,17 +12,17 @@ Both Images can be run with the following settings (we included cap-add to allow
 
 ## Testing with Docker containers only
 
-### Step 1. Run Server container on Server machine: 
+#### Step 1. Run Server container on Server machine: 
 
     $ docker pull wangso:imgproc-server:gpu 
     
     $ docker run --rm -it --entrypoint bash --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --env resolution='1080p' --gpus all -p 5000:5000 wangso/imgproc-server:gpu
     
-### Step 2: Before running client, we need to update the server address on the Server container (this command can be run from anywhere where you have curl installed):
+#### Step 2: Before running client, we need to update the server address on the Server container (this command can be run from anywhere where you have curl installed):
     
     $ curl -X POST -H 'Content-Type: application/json' http://**Server_IP**:5000/setNextServer -d '{"server":"server_IP:5000"}'
     
-### Step 3: Start Client container on Client machine:
+#### Step 3: Start Client container on Client machine:
     
     $ docker pull wangso:imgproc-client:gpu 
     
@@ -31,19 +31,19 @@ Both Images can be run with the following settings (we included cap-add to allow
     
 ## Testing with Kubernetes cluster
 
-### Step 1. Run server deployment:
+#### Step 1. Run server deployment:
 
     $ kubectl apply -f server-deployment.yaml
     
-### Step 2. Monitor server output:
+#### Step 2. Monitor server output:
 
     $ kubectl logs -f server_pod_ID
 
-### Step 3. Update server address to listen to (URL is depending on if the host machine has TLS, change to HTTP if no TLS on the host)
+#### Step 3. Update server address to listen to (URL is depending on if the host machine has TLS, change to HTTP if no TLS on the host)
 
     $ curl -X POST -H 'Content-Type: application/json' https://Server_IP:Port/setNextServer -d '{"server":"Server_IP:Port"}'
     
-### Step 3. Run client deployment (first modify the env inside yaml file to update the server_IP:port): 
+#### Step 4. Run client deployment (first modify the env inside yaml file to update the server_IP:port): 
 
      $ kubectl apply -f client-deployment.yaml
      
