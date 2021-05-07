@@ -5,6 +5,7 @@ The current version includes GPU capabilities implemented on CUDA image, and wil
 ## Currently available Docker images on Dockerhub:
 
 $ docker pull wangso/imgproc-server:gpu
+
 $ docker pull wangso/imgproc-client:gpu
 
 Both Images can be run with the following settings (we included cap-add to allow modifying network settings). Example commands use resolution at 1080p. The other option currently available is '360p'. These two settings will allow streaming and processing of videos at these two resolutions ONLY!
