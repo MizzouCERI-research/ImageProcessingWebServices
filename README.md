@@ -53,22 +53,22 @@ Both Images can be run with the following settings (we included cap-add to allow
 # Description of the Image processing app components: 
 
 ### Server 
-[server.py](https://github.com/wangso/ImageProcessingWebServices/Server/server.py) implements a RESTFUL webservice for object detection.
+[server.py](https://github.com/wangso/ImageProcessingWebServices/blob/master/Server/server.py) implements a RESTFUL webservice for object detection.
 The following endpoints currently exist.
 1. /init: This initializes all counters to 0
 2. /setNextServer: Set the IP address:port (or DNS) of the Server inside the NextServer.txt 
 3. /frameProcessing: This uses openCv methods to find the objects that have changed from a preceding frame. It sends each object to /classifier.
-4. /objectClassifier: This is a deep learning model(Yolo-V3 trained on COCO) that attempts to classify an image into a fixed set of classes. It increments the [counter](https://github.com/wangso/ImageProcessingWebServices/output/server/output.txt) for that object class.
+4. /objectClassifier: This is a deep learning model(Yolo-V3 trained on COCO) that attempts to classify an image into a fixed set of classes. It increments the [counter](https://github.com/wangso/ImageProcessingWebServices/blob/master/output/server/output.txt) for that object class.
 5. /getCounts: This retrieves the current value of the counters.
 
-[Dockerfile](https://github.com/wangso/ImageProcessingWebServices/Server/Dockerfile) for starting up a container running the server.
+[Dockerfile](https://github.com/wangso/ImageProcessingWebServices/blob/master/Server/Dockerfile) for starting up a container running the server.
 
 [server-deployment.yaml](https://github.com/wangso/ImageProcessingWebServices/blob/master/Kubenetes-manifest/server-deployment.yaml) for starting up a k8s pod running the server.
 
 ### Client 
-[client.py](https://github.com/wangso/ImageProcessingWebServices/Client/client.py) reads a video and sends frames to server.py.
+[client.py](https://github.com/wangso/ImageProcessingWebServices/blob/master/Client/client.py) reads a video and sends frames to server.py.
 
-[Dockerfile](https://github.com/wangso/ImageProcessingWebServices/Client/Dockerfile) for starting up a container running the client.
+[Dockerfile](https://github.com/wangso/ImageProcessingWebServices/blob/master/Client/Dockerfile) for starting up a container running the client.
 
 [client-deployment.yaml](https://github.com/wangso/ImageProcessingWebServices/blob/master/Kubenetes-manifest/client-deployment.yaml) for starting up a k8s pod running the client.
 
