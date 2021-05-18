@@ -3,6 +3,7 @@ from flask_restful import Resource, Api
 import cv2
 import requests
 import os
+from os import path
 #import io
 import random
 import numpy as np
@@ -30,8 +31,8 @@ dilatedFrame = 0
 #Prep the DNN
 labelsPath = os.path.sep.join([yolodir, "coco.names"])
 LABELS = open(labelsPath).read().strip().split("\n")
-weightsPath = os.path.sep.join([yolodir, "yolov3-tiny.weights"])
-configPath = os.path.sep.join([yolodir, "yolov3-tiny.cfg"])
+weightsPath = os.path.sep.join([yolodir, "yolov3.weights"])
+configPath = os.path.sep.join([yolodir, "yolov3.cfg"])
 metaPath = os.path.sep.join([yolodir, "coco.data"])
 # net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 # net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
@@ -88,10 +89,17 @@ def frameClassifier():
     FPS = []
     startTime = time.time()
     frameCount=1
-    for i in range(0,110):
+    for i in range(0,4000):
         frameStartTime = time.time()
         frame = ("videoFrames/frame%05d.bmp"%i).encode("ascii")
         print("current frame is ", frame)
+#        if(not str(path.exists("videoFrames/frame%05d.bmp"%i))):
+        for j in range(0,1000000):
+            if(not path.isfile("videoFrames/frame%05d.bmp"%i)):
+                #print("Frame does not exist ")
+                j = j+1
+                time.sleep(0.01)
+            break
         frameCount+=1
         r = dn.detect(net, meta, frame)
         time1 = time.time()
@@ -111,7 +119,7 @@ def videoClassifier():
     averageFPS =0
     FPS = []
     startTime = time.time()
-    video = cv2.VideoCapture("./test.mp4")
+    video = cv2.VideoCapture("./video_1920_1080.mp4")
     uri_init = "http://" + getNextServer() + "/init"
     #uri = requests.post("http://" + getNextServer() + "/objectClassifier")
     #force 640x480 webcam resolution
@@ -257,4 +265,3 @@ def get_resolution():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
-    

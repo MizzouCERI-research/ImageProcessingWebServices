@@ -6,8 +6,7 @@ import os
 #import io
 import random
 import numpy as np
-import time
-import math
+#import time
 import json
 from collections import OrderedDict
 import darknet as dn
@@ -75,77 +74,28 @@ def frameProcessing():
     r = requests.post("http://" + getNextServer() + "/objectClassifier", headers = headers, json = {"Frame":frame.tolist()} )
     return Response(status=200)
 
-@app.route("/objectClassifierFrames", methods = ["POST"])
-def frameClassifier():
+@app.route("/objectClassifier", methods = ["POST"])
+def classifier():
     """
     Classify an object and update the counter maintained at output.txt.
     """
     print("Classifying")
     #initialize important variables
-    peakFPS = 0
-    minFPS = 10000
-    averageFPS =0
-    FPS = []
-    startTime = time.time()
-    frameCount=1
-    for i in range(0,110):
-        frameStartTime = time.time()
-        frame = ("videoFrames/frame%05d.bmp"%i).encode("ascii")
-        print("current frame is ", frame)
-        frameCount+=1
-        r = dn.detect(net, meta, frame)
-        time1 = time.time()
-        print("time taken to detect objects from the current frame is ", time1-frameStartTime)
-        print(r)
-        currentFPS = 1.0/(time.time() - frameStartTime)
-        print("Total time taken for this frame ", time.time() - frameStartTime)
-        FPS.append(currentFPS)
-        print("response = {}, frame = {}, fps = {} ".format(r, frameCount, round(currentFPS, 3)))
+    minConfidence = 0.5
+    thresholdValue = 0.3
+    file = request.json
+    frame = np.array(file["Frame"], dtype = "uint8")
+    # width, height = frame.size
+    frame = np.reshape(frame, get_resolution())
+    # print(frame.shape)
+    # print(frame)
+    # data = Image.fromarray(frame)
+    # print("dimension of frame ", frame.shape[0], frame.shape[1], frame.shape[2])
+    im = array_to_image(frame)
+    dn.rgbgr_image(im)
+    r = dn.detect(net, meta, im)
+    print(r)
     return Response(status=200)
-
-@app.route("/objectClassifierVideo", methods = ["POST"])
-def videoClassifier():
-    frameCount = 1
-    peakFPS = 0
-    minFPS = 10000
-    averageFPS =0
-    FPS = []
-    startTime = time.time()
-    video = cv2.VideoCapture("./test.mp4")
-    uri_init = "http://" + getNextServer() + "/init"
-    #uri = requests.post("http://" + getNextServer() + "/objectClassifier")
-    #force 640x480 webcam resolution
-    #video.set(3,1080)
-    #video.set(4,1920)
-
-    while True:
-        frameStartTime = time.time()
-        frameCount+=1
-        (grabbed, frame) = video.read()
-        time1 = time.time()
-        print("time taken to load image frame ", time1-frameStartTime)
-        height = np.size(frame,0)
-        width = np.size(frame,1)
-        print("size of data: ", width, " X ", height)
-        #if cannot grab a frame, this program ends here.
-        if not grabbed:
-            break
-        cv2.imwrite("Frame.bmp", frame)
-        time2 = time.time()
-        print("Time taken for write frame into local file ", time2 - time1)
-        r = dn.detect(net, meta, "Frame.bmp".encode("ascii"))
-        time3 = time.time()
-        print("Time taken to detect objects ", time3 - time2)
-        currentFPS = 1.0/(time.time() - frameStartTime)
-        print("Total time taken for this frame ", time.time() - frameStartTime)
-        FPS.append(currentFPS)
-        print("response = {}, frame = {}, fps = {} ".format(r, frameCount, round(currentFPS, 3)))
-        if r == "<Response [500]>":
-            break
-    print("Average FPS = {}".format(round(np.mean(FPS), 3)))
-    print("RunTimeInSeconds = {}".format(round(frameStartTime - startTime, 3)))
-    #return Response(status=200)
-
 
 @app.route("/getCounts", methods = ["GET"])
 def getCounts():
@@ -251,10 +201,9 @@ def get_resolution():
         return (1080, 1920, 3)
     elif resolution == "360p" :
         return (360, 640, 3)
-    else:
+    else: 
         print("video resolution is not defined...  ")
-        return
+        return 
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
-    

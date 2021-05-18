@@ -88,7 +88,7 @@ def frameClassifier():
     FPS = []
     startTime = time.time()
     frameCount=1
-    for i in range(0,110):
+    for i in range(0,200):
         frameStartTime = time.time()
         frame = ("videoFrames/frame%05d.bmp"%i).encode("ascii")
         print("current frame is ", frame)
@@ -97,6 +97,8 @@ def frameClassifier():
         time1 = time.time()
         print("time taken to detect objects from the current frame is ", time1-frameStartTime)
         print(r)
+        time2 = time.time()
+        print("Time taken to detect objects ", time2 - time1)
         currentFPS = 1.0/(time.time() - frameStartTime)
         print("Total time taken for this frame ", time.time() - frameStartTime)
         FPS.append(currentFPS)
@@ -130,10 +132,10 @@ def videoClassifier():
         #if cannot grab a frame, this program ends here.
         if not grabbed:
             break
-        cv2.imwrite("Frame.bmp", frame)
+        cv2.imwrite("Frame.jpg", frame)
         time2 = time.time()
         print("Time taken for write frame into local file ", time2 - time1)
-        r = dn.detect(net, meta, "Frame.bmp".encode("ascii"))
+        r = dn.detect(net, meta, "Frame.jpg".encode("ascii"))
         time3 = time.time()
         print("Time taken to detect objects ", time3 - time2)
         currentFPS = 1.0/(time.time() - frameStartTime)

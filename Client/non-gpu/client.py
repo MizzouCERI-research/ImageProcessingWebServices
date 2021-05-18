@@ -26,8 +26,8 @@ video.set(3,640)
 video.set(4,480)
 response = requests.post(uri_init, json = {})
 
-for i in range(0,20):
-    (grabbed, frame) = video.read()
+#for i in range(0,20):
+ #   (grabbed, frame) = video.read()
 
 while True:
 	frameStartTime = time.time()

@@ -5,13 +5,15 @@ import requests
 import os
 #import io
 import random
+import math
 import numpy as np
 import time
-import math
 import json
 from collections import OrderedDict
 import darknet as dn
 from PIL import Image
+from ctypes import *
+import pickle
 
 #global variables
 width = 0
@@ -43,6 +45,10 @@ meta = dn.load_meta(metaPath.encode("ascii"))
 app = Flask(__name__)
 api = Api(app)
 
+def getNextServer():
+    file = open("../NextServer.txt", "r")
+    return file.read()[:]
+
 @app.route("/")
 def index():
     return "Image processing functional decomposition"
@@ -61,62 +67,25 @@ def init():
     json.dump(labelDict, open(outputFile, "w"))
     return "Output Counter Initialized"
 
-@app.route("/frameProcessing", methods = ["POST"])
-def frameProcessing():
-    """
-    Receive the frames from a video sequentially and count the number of objects. Each object is sent to a classifier which saves the count of objects that have been seen.
-    """
-    global referenceFrame
-    global dilatedFrame
-    #receive the image from the request.
-    file = request.json
-    frame = np.array(file["Frame"], dtype = "uint8")
-    headers = {"enctype" : "multipart/form-data"}
-    r = requests.post("http://" + getNextServer() + "/objectClassifier", headers = headers, json = {"Frame":frame.tolist()} )
-    return Response(status=200)
-
-@app.route("/objectClassifierFrames", methods = ["POST"])
-def frameClassifier():
-    """
-    Classify an object and update the counter maintained at output.txt.
-    """
-    print("Classifying")
-    #initialize important variables
-    peakFPS = 0
-    minFPS = 10000
-    averageFPS =0
-    FPS = []
-    startTime = time.time()
-    frameCount=1
-    for i in range(0,110):
-        frameStartTime = time.time()
-        frame = ("videoFrames/frame%05d.bmp"%i).encode("ascii")
-        print("current frame is ", frame)
-        frameCount+=1
-        r = dn.detect(net, meta, frame)
-        time1 = time.time()
-        print("time taken to detect objects from the current frame is ", time1-frameStartTime)
-        print(r)
-        currentFPS = 1.0/(time.time() - frameStartTime)
-        print("Total time taken for this frame ", time.time() - frameStartTime)
-        FPS.append(currentFPS)
-        print("response = {}, frame = {}, fps = {} ".format(r, frameCount, round(currentFPS, 3)))
-    return Response(status=200)
-
-@app.route("/objectClassifierVideo", methods = ["POST"])
-def videoClassifier():
+@app.route("/sendFrame", methods = ["POST"])
+def sendFrame():
     frameCount = 1
     peakFPS = 0
     minFPS = 10000
     averageFPS =0
     FPS = []
     startTime = time.time()
-    video = cv2.VideoCapture("./test.mp4")
+    video = cv2.VideoCapture("./b.mp4")
     uri_init = "http://" + getNextServer() + "/init"
+    #uri = "http://" + getNextServer() + "/frameProcessing"
     #uri = requests.post("http://" + getNextServer() + "/objectClassifier")
     #force 640x480 webcam resolution
-    #video.set(3,1080)
-    #video.set(4,1920)
+    video.set(3,1080)
+    video.set(4,1920)
+#    response = requests.post(uri_init, json = {})
+
+    # for i in range(0,20):
+    #     (grabbed, frame) = video.read()
 
     while True:
         frameStartTime = time.time()
@@ -130,10 +99,10 @@ def videoClassifier():
         #if cannot grab a frame, this program ends here.
         if not grabbed:
             break
-        cv2.imwrite("Frame.bmp", frame)
+        cv2.imwrite("Frame.jpg", frame)
         time2 = time.time()
         print("Time taken for write frame into local file ", time2 - time1)
-        r = dn.detect(net, meta, "Frame.bmp".encode("ascii"))
+        r = dn.detect(net, meta, "Frame.jpg".encode("ascii"))
         time3 = time.time()
         print("Time taken to detect objects ", time3 - time2)
         currentFPS = 1.0/(time.time() - frameStartTime)
@@ -146,6 +115,52 @@ def videoClassifier():
     print("RunTimeInSeconds = {}".format(round(frameStartTime - startTime, 3)))
     #return Response(status=200)
 
+# @app.route("/frameProcessing", methods = ["POST"])
+# def frameProcessing():
+#     """
+#     Receive the frames from a video sequentially and count the number of objects. Each object is sent to a classifier which saves the count of objects that have been seen.
+#     """
+#     global referenceFrame
+#     global dilatedFrame
+#     #receive the image from the request.
+#     file = request.json
+#     frame = np.array(file["Frame"], dtype = "uint8")
+#     headers = {"enctype" : "multipart/form-data"}
+#     r = requests.post("http://" + getNextServer() + "/objectClassifier", headers = headers, json = {"Frame":frame.tolist()} )
+#     return Response(status=200)
+
+# @app.route("/objectClassifier", methods = ["POST"])
+# def classifier():
+#     """
+#     Classify an object and update the counter maintained at output.txt.
+#     """
+#     print("Classifying")
+#     #initialize important variables
+#     minConfidence = 0.5
+#     thresholdValue = 0.3
+#     file = request.json
+#     time1 = time.time();
+#     frame = np.array(file["Frame"], dtype = "uint8")
+#     time2 = time.time();
+#     print("Time to transform current frame to np array ", time2-time1)
+#     # width, height = frame.size
+#     frame = np.reshape(frame, (1080, 1920, 3))
+#     time3 = time.time();
+#     print("Time to transform current frame to reshape np array ", time3-time2)
+#     # print(frame.shape)
+#     # print(frame)
+#     # data = Image.fromarray(frame)
+#     # print("dimension of frame ", frame.shape[0], frame.shape[1], frame.shape[2])
+#     im = array_to_image(frame)
+#     time4 = time.time();
+#     print("Time to transform array back to image ", time4-time3)
+# #    dn.rgbgr_image(im)
+#     time5 = time.time();
+#     print("Time to change image to rgb ", time5-time4)
+#     r = dn.detect(net, meta, im)
+#     time6 = time.time();
+#     print("Time to detect image ", time6-time5)
+#     return Response(status=200)
 
 @app.route("/getCounts", methods = ["GET"])
 def getCounts():
@@ -158,16 +173,11 @@ def getCounts():
 
 @app.route("/setNextServer", methods = ["POST"])
 def setNextServer():
-        data = request.get_json()
-        #json.dump(data["server"], open("../NextServer.txt", "w"))
-        text_file=open("../NextServer.txt", "w")
-        text_file.write(data["server"])
-        text_file.close()
-
-def getNextServer():
-    file = open("../NextServer.txt", "r")
-    return file.read()[:]
-
+    data = request.get_json()
+    #json.dump(data["server"], open("../NextServer.txt", "w"))
+    text_file=open("../NextServer.txt", "w")
+    text_file.write(data["server"])
+    text_file.close()
 
 def getContourCentroid(x, y, w, h):
     """
@@ -245,16 +255,7 @@ def array_to_image(arr):
     im = dn.IMAGE(w,h,c,data)
     return im
 
-def get_resolution():
-    resolution = os.environ['resolution']
-    if resolution == "1080p" :
-        return (1080, 1920, 3)
-    elif resolution == "360p" :
-        return (360, 640, 3)
-    else:
-        print("video resolution is not defined...  ")
-        return
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
+    
     

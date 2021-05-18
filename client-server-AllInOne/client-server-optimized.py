@@ -22,7 +22,7 @@ minContourArea = 40  #Adjust ths value according to tweak the size of the moving
 binarizationThreshold = 30  #Adjust ths value to tweak the binarization
 offsetEntranceLine = 30  #offset of the entrance line above the center of the image
 offsetExitLine = 60
-yolodir = "./YOLO"
+yolodir = "../YOLO"
 outputFile = "../output/server/output.txt"
 referenceFrame = 0
 dilatedFrame = 0
@@ -30,8 +30,8 @@ dilatedFrame = 0
 #Prep the DNN
 labelsPath = os.path.sep.join([yolodir, "coco.names"])
 LABELS = open(labelsPath).read().strip().split("\n")
-weightsPath = os.path.sep.join([yolodir, "yolov3.weights"])
-configPath = os.path.sep.join([yolodir, "yolov3.cfg"])
+weightsPath = os.path.sep.join([yolodir, "yolov3-tiny.weights"])
+configPath = os.path.sep.join([yolodir, "yolov3-tiny.cfg"])
 metaPath = os.path.sep.join([yolodir, "coco.data"])
 # net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 # net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)

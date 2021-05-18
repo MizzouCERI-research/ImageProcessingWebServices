@@ -123,12 +123,12 @@ def classify(net, meta, im):
     return res
 
 def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
-    #im = load_image(image, 0, 0)
+    im = load_image(image, 0, 0)
 #    im = image
     num = c_int(0)
     pnum = pointer(num)
-    predict_image(net, image)
-    dets = get_network_boxes(net, image.w, image.h, thresh, hier_thresh, None, 0, pnum)
+    predict_image(net, im)
+    dets = get_network_boxes(net, im.w, im.h, thresh, hier_thresh, None, 0, pnum)
     num = pnum[0]
     if (nms): do_nms_obj(dets, num, meta.classes, nms);
 
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     #meta = load_meta("cfg/imagenet1k.data")
     #r = classify(net, meta, im)
     #print r[:10]
-    net = load_net("cfg/tiny-yolo.cfg", "tiny-yolo.weights", 0)
-    meta = load_meta("cfg/coco.data")
-    r = detect(net, meta, "data/dog.jpg")
+    net = load_net("cfg/tiny-yolo.cfg".encode("ascii"), "tiny-yolo.weights".encode("ascii"), 0)
+    meta = load_meta("cfg/coco.data".encode("ascii"))
+    r = detect(net, meta, "data/dog.jpg".encode("ascii"))
     print(r)
