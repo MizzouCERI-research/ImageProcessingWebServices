@@ -1,3 +1,5 @@
+# Server needs to run on the master node where port 5000 is open
+# This only applies to Kubernetes cluster (not standalone Docker containers)
 apiVersion: apps/v1
 kind: Deployment
 metadata:

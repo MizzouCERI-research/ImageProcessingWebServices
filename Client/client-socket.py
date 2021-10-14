@@ -26,7 +26,7 @@ startTime = time.time()
 
 
 if __name__=="__main__":
-    VIDEO_FILE = "360p_100KB.mp4"
+    VIDEO_FILE = "road-traffic.mp4"
 
     # read video into memory, frame by frame
     cap = cv.VideoCapture(VIDEO_FILE)

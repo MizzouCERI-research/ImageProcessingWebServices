@@ -15,7 +15,7 @@ spec:
                 tier: client
         spec:
             nodeSelector:
-              nodePool: tamu-worker1
+              nodePool: Your-Node-pool
             containers:
             - name: imgproc-client
               image: wangso/imgproc-client:V1

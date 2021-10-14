@@ -1,6 +1,0 @@
-flask 
-flask_restful 
-scikit-build 
-opencv_contrib_python 
-numpy 
-requests

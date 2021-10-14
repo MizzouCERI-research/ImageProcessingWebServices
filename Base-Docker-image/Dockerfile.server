@@ -1,6 +1,0 @@
-# used this to build docker image wangso/imgproc-server:gpu
-FROM nvidia/cuda:11.3.0-devel-ubuntu18.04
-MAINTAINER Songjie Wang "wangso@missouri.edu"
-RUN apt-get -y update && apt-get -y install software-properties-common apt-utils python3-pip python3-dev libopencv-dev python3-opencv build-essential ffmpeg unzip nano curl git wget
-COPY ./requirement.txt /requirment.txt
-RUN pip3 install -r /requirements.txt
