@@ -89,28 +89,6 @@ def frameProcessing():
 	coordYExitLine = int((height / 2)+offsetExitLine)
 	headers = {"enctype" : "multipart/form-data"}
 	r = requests.post("http://" + getNextServer() + "/objectClassifier", headers = headers, json = {"Frame":frame.tolist()} )
-	"""	
-	for c in cnts:
-		print("x")
-		if cv2.contourArea(c) < minContourArea:
-			print("Small Area", cv2.contourArea(c))
-			continue
-		(x, y, w, h) = getContourBound(c)
-		#grab an area 2 times larger than the contour.
-		cntImage  = frame[y:y+int(1.5*w), x:x+int(1.5*h)]
-		objectCentroid = getContourCentroid(x, y, w, h)
-		coordYCentroid = (y+y+h)/2
-		
-		
-		#if (checkEntranceLineCrossing(coordYCentroid,coordYEntranceLine,coordYExitLine)):				
-		headers = {"enctype" : "multipart/form-data"}
-		#i = random.randint(1,1000)
-		#cv2.imwrite("ContourImages/contour"+str(i)+".jpg", cntImage)
-		#files = {"image":open("ContourImages/contour"+str(i)+".jpg", "rb")}
-		data = {"contour" : cntImage.tolist()}
-		r = requests.post("http://" + getNextServer() + "/objectClassifier", headers = headers, json = data )
-	
-	"""
 	return Response(status=200)
 
 @app.route("/objectClassifier", methods = ["POST"])
@@ -226,8 +204,9 @@ def setNextServer():
 	return ("server address updated... at " + data["server"] + "\n")
 	
 def getNextServer():
-	file = open("../NextServer.txt", "r")
-	return file.read()[:]
+	# file = open("../NextServer.txt", "r")
+	# return file.read()[:]
+	return os.environ['server']
 
 	
 def getContourCentroid(x, y, w, h):
