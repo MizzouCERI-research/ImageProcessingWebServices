@@ -218,11 +218,12 @@ def getCounts():
 
 @app.route("/setNextServer", methods = ["POST"])
 def setNextServer():
-        data = request.get_json()
-        #json.dump(data["server"], open("../NextServer.txt", "w"))
-        text_file=open("../NextServer.txt", "w")
-        text_file.write(data["server"])
-        text_file.close()
+	data = request.get_json()
+	#json.dump(data["server"], open("../NextServer.txt", "w"))
+	text_file=open("../NextServer.txt", "w")
+	text_file.write(data["server"])
+	text_file.close()
+	return ("server address updated... at " + data["server"] + "\n")
 	
 def getNextServer():
 	file = open("../NextServer.txt", "r")
@@ -230,70 +231,70 @@ def getNextServer():
 
 	
 def getContourCentroid(x, y, w, h):
-    """
-    Get the centroid/center of the countours you have
-    @return: The coordinates of the  center points
-    """
-    coordXCentroid = (x+x+w)/2
-    coordYCentroid = (y+y+h)/2
-    objectCentroid = (int(coordXCentroid),int(coordYCentroid))
-    return objectCentroid
+	"""
+	Get the centroid/center of the countours you have
+	@return: The coordinates of the  center points
+	"""
+	coordXCentroid = (x+x+w)/2
+	coordYCentroid = (y+y+h)/2
+	objectCentroid = (int(coordXCentroid),int(coordYCentroid))
+	return objectCentroid
 	
 #Check if an object in entering in monitored zone
 def checkEntranceLineCrossing(y, coorYEntranceLine, coorYExitLine):
-    absDistance = abs(y - coorYEntranceLine)
+	absDistance = abs(y - coorYEntranceLine)
 
-    if ((absDistance <= 2) and (y < coorYExitLine)):
-        return 1
-    else:
-        return 0
-	
+	if ((absDistance <= 2) and (y < coorYExitLine)):
+		return 1
+	else:
+		return 0
+
 def getContours(frame):
-    """
-    Get the contours in the frame 
-    @return: contours
-    """
-    contours, _ = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    return contours
+	"""
+	Get the contours in the frame 
+	@return: contours
+	"""
+	contours, _ = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	return contours
 
 def getContourBound(contour):
-    """
-    Returns a rectangle that is a bound around the contour.
-    @return: contour Bounds
-    """
-    (x,y,w,h) = cv2.boundingRect(contour)
-    return (x,y,w,h)
+	"""
+	Returns a rectangle that is a bound around the contour.
+	@return: contour Bounds
+	"""
+	(x,y,w,h) = cv2.boundingRect(contour)
+	return (x,y,w,h)
 
 def thresholdImage(frame, binarizationThreshold=30):
-    """
-    Threshold the image to make it black and white. values above binarizationThreshold are made white and the rest
-    is black
-    """
-    return cv2.threshold(frame, binarizationThreshold, 255, cv2.THRESH_BINARY)[1]
+	"""
+	Threshold the image to make it black and white. values above binarizationThreshold are made white and the rest
+	is black
+	"""
+	return cv2.threshold(frame, binarizationThreshold, 255, cv2.THRESH_BINARY)[1]
 
 def getImageDiff(referenceFrame, frame):
-    """
-    Get the difference between 2 frames to isolate and retrieve only the moving object
-    """
-    return cv2.absdiff(referenceFrame, frame)
+	"""
+	Get the difference between 2 frames to isolate and retrieve only the moving object
+	"""
+	return cv2.absdiff(referenceFrame, frame)
 
 def gaussianBlurring(frame):
-    """
-    Preprocess the image by applying a gaussian blur
-    """
-    return cv2.GaussianBlur(frame, ksize =(11, 11), sigmaX = 0)
+	"""
+	Preprocess the image by applying a gaussian blur
+	"""
+	return cv2.GaussianBlur(frame, ksize =(11, 11), sigmaX = 0)
 
 def greyScaleConversion(frame):
-    """
-    Convert the image from 3 channels to greyscale to reduce the compute required to run it.
-    """
-    return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+	"""
+	Convert the image from 3 channels to greyscale to reduce the compute required to run it.
+	"""
+	return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 def dilateImage(frame, interations=2 ):
-    """
-    Dilate the image to prevent spots that are black inside an image from being counted as individual objects
-    """
-    return cv2.dilate(frame, None, iterations=2)
+	"""
+	Dilate the image to prevent spots that are black inside an image from being counted as individual objects
+	"""
+	return cv2.dilate(frame, None, iterations=2)
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", debug=True)
