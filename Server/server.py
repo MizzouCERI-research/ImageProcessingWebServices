@@ -29,7 +29,7 @@ labelsPath = os.path.sep.join([yolodir, "coco.names"])
 LABELS = open(labelsPath).read().strip().split("\n")
 weightsPath = os.path.sep.join([yolodir, "yolov3.weights"])
 configPath = os.path.sep.join([yolodir, "yolov3.cfg"])
-net = cv2.dnn.readNetFromDarknet(configPath.encode("ascii"), weightsPath.encode("ascii"))
+net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 
 
 app = Flask(__name__)
