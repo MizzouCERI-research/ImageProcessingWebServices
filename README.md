@@ -20,7 +20,7 @@ Both Images can be run with the following settings (we included cap-add to allow
 
     $ docker pull wangso:imgproc-server:V2 
     
-    $ docker run --rm -it --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --env server=**server_IP**:5000 -p 5000:5000 wangso/imgproc-server:gpu
+    $ docker run --rm -it --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --env server=**server_IP**:5000 -p 5000:5000 wangso/imgproc-server:V2
     
 <!-- #### Step 2: Before running client, we need to update the server address inside the Server container (replace both server_IP with the IP of the Server) 
 #### This command can be run from anywhere where you have curl installed:
@@ -31,7 +31,7 @@ Both Images can be run with the following settings (we included cap-add to allow
     
     $ docker pull wangso:imgproc-client:V2 
     
-    $ docker run --rm -it --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env server=**server_IP**:5000 wangso/imgproc-client:gpu
+    $ docker run --rm -it --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env server=**server_IP**:5000 wangso/imgproc-client:V2
 
     
 ## Testing with Kubernetes cluster
