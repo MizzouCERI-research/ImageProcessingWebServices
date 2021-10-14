@@ -33,7 +33,17 @@ Both Images can be run with the following settings (we included cap-add to allow
     
     $ docker run --rm -it --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env server=**server_IP**:5000 wangso/imgproc-client:V2
 
+    For Example: 
+    $ docker run --rm -it --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env server=3.237.180.140:5000 wangso/imgproc-client:V2
+
+
+#### To retrieve object types and counts: 
+    $ curl -X GET -H 'Content-Type: application/json' http://**server_IP**:5000/getCounts   
+
+    For Example:  
+    $ curl -X GET -H 'Content-Type: application/json' http://3.237.180.140:5000/getCounts
     
+
 ## Testing with Kubernetes cluster
 
 #### Step 1. Run server deployment:
