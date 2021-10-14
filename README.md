@@ -18,20 +18,20 @@ Both Images can be run with the following settings (we included cap-add to allow
 
 #### Step 1. Run Server container on Server machine: 
 
-    $ docker pull wangso:imgproc-server:gpu 
+    $ docker pull wangso:imgproc-server:V2 
     
-    $ docker run --rm -it --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --env resolution='1080p' --gpus all -p 5000:5000 wangso/imgproc-server:gpu
+    $ docker run --rm -it --name server --cap-add=all -v /root/server:/ImageProcessingWebServices/output/server --env server=**server_IP**:5000 -p 5000:5000 wangso/imgproc-server:gpu
     
-#### Step 2: Before running client, we need to update the server address inside the Server container (replace both server_IP with the IP of the Server) 
+<!-- #### Step 2: Before running client, we need to update the server address inside the Server container (replace both server_IP with the IP of the Server) 
 #### This command can be run from anywhere where you have curl installed:
     
     $ curl -X POST -H 'Content-Type: application/json' http://**Server_IP**:5000/setNextServer -d '{"server":"**server_IP**:5000"}'
+     -->
+#### Step 2: Start Client container on Client machine (replace server_IP with the IP of the Server):
     
-#### Step 3: Start Client container on Client machine (replace server_IP with the IP of the Server):
+    $ docker pull wangso:imgproc-client:V2 
     
-    $ docker pull wangso:imgproc-client:gpu 
-    
-    $ docker run --rm -it --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env resolution='1080p' --env server=**server_IP**:5000 wangso/imgproc-client:gpu
+    $ docker run --rm -it --name client --cap-add=all -v /root/client:/ImageProcessingWebServices/output/client --env server=**server_IP**:5000 wangso/imgproc-client:gpu
 
     
 ## Testing with Kubernetes cluster
