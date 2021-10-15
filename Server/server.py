@@ -21,6 +21,7 @@ offsetEntranceLine = 30  #offset of the entrance line above the center of the im
 offsetExitLine = 60
 yolodir = "../YOLO"
 outputFile = "../output/server/output.txt"
+boundingBoxFile = "../output/server/boundingBox.txt"
 referenceFrame = 0
 dilatedFrame = 0
 
@@ -45,14 +46,19 @@ def init():
 	"""
 	Re-initialize the object counter to 0 for all objects.
 	"""
-	print("Initializing Application")
+	print("Initializing Application \n")
 	labelDict = {}
 	labelsPath = os.path.sep.join([yolodir, "coco.names"])
 	LABELS = open(labelsPath).read().strip().split("\n")
 	for label in LABELS:
 		labelDict[label] = 0
 	json.dump(labelDict, open(outputFile, "w"))	
-	return "Output Counter Initialized"
+	print("Output Counter Initialized \n")
+	f = open("../output/server/boundingBox.txt", "w")
+	f.close()
+	print("bounding box file reset \n")
+	return("server initialized \n")
+
 
 @app.route("/frameProcessing", methods = ["POST"])
 def frameProcessing():
@@ -101,19 +107,8 @@ def classifier():
 	minConfidence = 0.5
 	thresholdValue = 0.3
 	
-	"""
-	file = request.files#['image']
-	file.save("./classifier_image.jpg")
-	frame = cv2.imread("./classifier_image.jpg")
-	"""
 	file = request.json
 	frame = np.array(file["Frame"], dtype = "uint8") 
-
-	#file = request.files['image']
-	#file.save("./classifier_image.jpg")
-	#frame = cv2.imread("./classifier_image.jpg")
-	#file = request.json
-	#frame = np.array(file["contour"], dtype="uint8")
 	
 	#Get Image dimensions
 	image = cv2.copyMakeBorder(frame, 30, 30, 30, 30, cv2.BORDER_CONSTANT, value=255)
@@ -176,14 +171,18 @@ def classifier():
 			(x, y) = (boxes[i][0], boxes[i][1])
 			(w, h) = (boxes[i][2], boxes[i][3])
 
-			print(LABELS[classIDs[i]], output[LABELS[classIDs[i]]]+1, confidences[i])
-			output[LABELS[classIDs[i]]]+=1
+		print("Object detected: " +str(LABELS[classIDs[i]]), "# "+str(output[LABELS[classIDs[i]]]+1), "Confidence: "+str(confidences[i]))
+		print("Object bounding box: center at (" +  str(x) +" " + str(y) + "), width: " + str(w) + "; height " + str(h) + ".\n")
+		with open(boundingBoxFile, "a+") as f:
+			f.write("Object detected: " +str(LABELS[classIDs[i]]) +  " ; \# "+str(output[LABELS[classIDs[i]]]+1) + "; Confidence: "+str(confidences[i]) + "\n")
+			f.write("Object bounding box: center at (" +  str(x) +" " + str(y) + "), width: " + str(w) + "; height " + str(h) + ".\n\n")
+		f.close()
+		output[LABELS[classIDs[i]]]+=1
 		
 		json.dump(output, open(outputFile, "w"))
 		return LABELS[classIDs[i]]
 	else:
 		return Response(status=200)
-
 
 @app.route("/getCounts", methods = ["GET"])
 def getCounts():
