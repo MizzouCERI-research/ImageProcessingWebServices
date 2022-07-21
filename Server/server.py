@@ -202,7 +202,7 @@ def setNextServer():
 	text_file.close()
 	return ("server address updated... at " + data["server"] + "\n")
 
-@app.route("/setNextServer", methods = ["POST"])	
+@app.route("/getNextServer", methods = ["POST"])	
 def getNextServer():
 	# file = open("../NextServer.txt", "r")
 	# return file.read()[:]
